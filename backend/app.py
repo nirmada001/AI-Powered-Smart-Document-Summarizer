@@ -1,22 +1,16 @@
-import os
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify
 from flask_cors import CORS
-from pymongo import MongoClient
-from dotenv import load_dotenv
-
-load_dotenv()  # Load environment variables from .env
+from routes.summarization import summarization_bp  # Import the blueprint
 
 app = Flask(__name__)
 CORS(app)
 
-# MongoDB Connection
-MONGO_URI = os.getenv("MONGO_URI")
-client = MongoClient(MONGO_URI)
-db = client["doc_summarizer"]
+# Register Blueprints
+app.register_blueprint(summarization_bp)
 
-@app.route("/", methods=["GET"])
+@app.route("/")
 def home():
-    return jsonify({"message": "Welcome to AI Document Summarizer API!"})
+    return jsonify({"message": "Welcome to AI-Powered Document Summarizer Backend!"})
 
 if __name__ == "__main__":
     app.run(debug=True)
