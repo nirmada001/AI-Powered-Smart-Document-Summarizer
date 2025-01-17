@@ -9,6 +9,11 @@ load_dotenv()
 
 # Set up MongoDB connection
 mongo_url = os.getenv("MONGO_URI")
+
+# Debugging: Check if MongoDB URI is loaded correctly
+if not mongo_url:
+    print("❌ ERROR: MONGO_URI is not set properly in the .env file.")
+
 client = MongoClient(mongo_url)
 db = client["summarizer_db"]
 summaries_collection = db["summaries"]
@@ -34,10 +39,17 @@ def summarize_text():
         )
         summary = response["choices"][0]["message"]["content"]
 
+        # Debugging: Print the summary before storing
+        print(f"✅ Generated Summary: {summary}")
+
         # Save summary in MongoDB
-        summaries_collection.insert_one({"original_text": text, "summary": summary})
+        insert_result = summaries_collection.insert_one({"original_text": text, "summary": summary})
+
+        # Debugging: Check if the insert was successful
+        print(f"✅ MongoDB Inserted ID: {insert_result.inserted_id}")
 
         return jsonify({"summary": summary})
 
     except Exception as e:
+        print(f"❌ ERROR: {str(e)}")
         return jsonify({"error": str(e)}), 500
