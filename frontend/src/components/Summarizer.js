@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
+//import css file
+import '../css/summarizer.css';
+
 
 const Summarizer = () => {
   const [text, setText] = useState("");
