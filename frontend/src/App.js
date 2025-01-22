@@ -1,12 +1,19 @@
+// src/App.js
 import React from "react";
-import Summarizer from "./components/Summarizer";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./components/Login";
+import Register from "./components/Register";
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <Summarizer />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/" element={<h1>Welcome to AI Document Summarizer</h1>} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
