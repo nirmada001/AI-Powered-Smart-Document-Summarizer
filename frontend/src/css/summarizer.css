@@ -1,0 +1,55 @@
+.summarizer-container {
+    text-align: center;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+  }
+  
+  .summary-options {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+  
+  .summary-options button {
+    margin: 0 5px;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    background-color: lightgray;
+    border-radius: 5px;
+  }
+  
+  .summary-options .active {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  button {
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+  }
+  
+  .summary-output {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background: #f9f9f9;
+    text-align: justify;
+  }
+  

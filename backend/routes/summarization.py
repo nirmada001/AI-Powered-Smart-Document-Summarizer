@@ -71,22 +71,32 @@ def summarize_text():
 
     data = request.json
     text = data.get("text", "")
+    summary_length = data.get("summary_length", "medium")  # Default to medium
 
     if not text:
         return jsonify({"error": "No text provided"}), 400
 
+    # Adjust the prompt based on the selected length
+    length_prompts = {
+        "short": "Provide a brief summary (1-2 sentences).",
+        "medium": "Provide a balanced summary (3-5 sentences).",
+        "detailed": "Provide a detailed summary (multiple paragraphs)."
+    }
+    prompt = f"{length_prompts.get(summary_length, length_prompts['medium'])} \n\n{text}"
+
     try:
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": f"Summarize this: {text}"}]
+            messages=[{"role": "user", "content": prompt}]
         )
         summary = response["choices"][0]["message"]["content"]
 
-        # Save summary in MongoDB with user ID
+        # Save summary in MongoDB with user ID and length
         insert_result = summaries_collection.insert_one({
             "user_id": user_id,
             "original_text": text,
-            "summary": summary
+            "summary": summary,
+            "summary_length": summary_length
         })
 
         return jsonify({"summary": summary, "summary_id": str(insert_result.inserted_id)})
@@ -106,6 +116,8 @@ def upload_file():
             return jsonify({"error": "No file part"}), 400
 
         file = request.files["file"]
+        summary_length = request.form.get("summary_length", "medium")  # Default to medium
+
         if file.filename == "":
             return jsonify({"error": "No selected file"}), 400
 
@@ -118,35 +130,52 @@ def upload_file():
         else:
             return jsonify({"error": "Unsupported file format"}), 400
 
+        # Adjust the prompt based on the selected length
+        length_prompts = {
+            "short": "Provide a brief summary (1-2 sentences).",
+            "medium": "Provide a balanced summary (3-5 sentences).",
+            "detailed": "Provide a detailed summary (multiple paragraphs)."
+        }
+        prompt = f"{length_prompts.get(summary_length, length_prompts['medium'])} \n\n{text}"
+
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": f"Summarize this: {text}"}]
+            messages=[{"role": "user", "content": prompt}]
         )
         summary = response["choices"][0]["message"]["content"]
 
-        # Save summary in MongoDB with user ID
+        # Save summary in MongoDB with user ID and selected length
         summaries_collection.insert_one({
             "user_id": user_id,
             "original_text": text,
-            "summary": summary
+            "summary": summary,
+            "summary_length": summary_length
         })
 
-        return jsonify({"summary": summary})
+        return jsonify({"summary": summary, "summary_length": summary_length})
 
     except Exception as e:
         print(f"❌ ERROR: {str(e)}")
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
-@summarization_bp.route("/summaries", methods=["GET"])
+
+@summarization_bp.route("/history", methods=["GET"])
 def get_user_summaries():
-    """Retrieves summaries for the logged-in user"""
-    user_id = extract_user_id()
+    user_id = extract_user_id()  # Extract user ID from token
     if not user_id:
         return jsonify({"error": "Unauthorized"}), 401
 
-    user_summaries = summaries_collection.find({"user_id": user_id})
-    summaries_list = [{"id": str(s["_id"]), "original_text": s["original_text"], "summary": s["summary"]} for s in user_summaries]
+    try:
+        summaries = list(summaries_collection.find({"user_id": user_id}))
+        
+        for summary in summaries:
+            summary["_id"] = str(summary["_id"])  # Convert ObjectId to string
 
-    return jsonify({"summaries": summaries_list})
+        return jsonify({"summaries": summaries})
+
+    except Exception as e:
+        print(f"❌ ERROR: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
 

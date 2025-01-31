@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "../css/summarizer.css";
+import "../css/summarizer.css"; // Ensure CSS file exists
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
@@ -8,24 +8,17 @@ const Summarizer = () => {
   const [text, setText] = useState("");
   const [summary, setSummary] = useState("");
   const [file, setFile] = useState(null);
+  const [summaryLength, setSummaryLength] = useState("medium"); // Default to Medium
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (token) {
       try {
         const decodedToken = jwtDecode(token);
-        console.log("Decoded Token:", decodedToken);
-
-        // Extract user ID from the token (modify based on actual token structure)
-        const userId = decodedToken.sub;
-        console.log("User ID:", userId);
-
-        setUser(userId);
+        setUser(decodedToken.sub);
       } catch (error) {
         console.error("Invalid token", error);
         localStorage.removeItem("token");
@@ -38,55 +31,84 @@ const Summarizer = () => {
 
   const handleSummarize = async () => {
     if (!text.trim()) {
-      setError("Please enter text to summarize.");
+      alert("Please enter text to summarize");
       return;
     }
 
     setLoading(true);
-    setError(null);
-
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
         "http://127.0.0.1:5000/summarize",
-        { text, user_id: user }, // Send user ID to backend
-        { headers: { Authorization: `Bearer ${token}` } } // Attach token
+        { text, summary_length: summaryLength },
+        { headers: { Authorization: token } }
       );
 
       setSummary(response.data.summary);
     } catch (error) {
       console.error("Error summarizing text:", error);
-      setError("Failed to summarize text. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleFileUpload = async () => {
-    if (!file) return alert("Please select a file");
-  
+    if (!file) {
+      alert("Please select a file");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("file", file);
-  
-    const token = localStorage.getItem("token"); // Retrieve token
-  
+    formData.append("summary_length", summaryLength);
+
+    setLoading(true);
     try {
-      const response = await axios.post("http://127.0.0.1:5000/upload", formData, {
-        headers: { 
-          "Content-Type": "multipart/form-data",
-          "Authorization": token // Send token in Authorization header
-        },
-      });
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "http://127.0.0.1:5000/upload",
+        formData,
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "multipart/form-data"
+          }
+        }
+      );
+
       setSummary(response.data.summary);
     } catch (error) {
       console.error("Error uploading file:", error);
+    } finally {
+      setLoading(false);
     }
   };
-  
 
   return (
-    <div>
+    <div className="summarizer-container">
       <h2>AI Document Summarizer</h2>
+
+      {/* Summary Length Selection */}
+      <div className="summary-options">
+        <button
+          className={summaryLength === "short" ? "active" : ""}
+          onClick={() => setSummaryLength("short")}
+        >
+          Short
+        </button>
+        <button
+          className={summaryLength === "medium" ? "active" : ""}
+          onClick={() => setSummaryLength("medium")}
+        >
+          Medium
+        </button>
+        <button
+          className={summaryLength === "detailed" ? "active" : ""}
+          onClick={() => setSummaryLength("detailed")}
+        >
+          Detailed
+        </button>
+      </div>
 
       {/* Text Summarization */}
       <textarea
@@ -101,18 +123,19 @@ const Summarizer = () => {
       </button>
 
       {/* File Upload */}
-      <input type="file" accept=".pdf,.docx" onChange={(e) => setFile(e.target.files[0])} />
+      <input
+        type="file"
+        accept=".pdf,.docx"
+        onChange={(e) => setFile(e.target.files[0])}
+      />
       <button onClick={handleFileUpload} disabled={loading}>
-        {loading ? "Uploading..." : "Upload & Summarize"}
+        {loading ? "Processing..." : "Upload & Summarize"}
       </button>
-
-      {/* Error Message */}
-      {error && <p style={{ color: "red" }}>{error}</p>}
 
       {/* Summary Output */}
       {summary && (
-        <div>
-          <h3>Summary:</h3>
+        <div className="summary-output">
+          <h3>Summary ({summaryLength}):</h3>
           <p>{summary}</p>
         </div>
       )}
