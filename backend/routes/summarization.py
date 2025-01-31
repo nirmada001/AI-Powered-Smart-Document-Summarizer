@@ -3,18 +3,17 @@ import openai
 import os
 from pymongo import MongoClient
 from dotenv import load_dotenv
-import fitz # PyMuPDF for PDFs
-import docx #python docx for DOCs
+import fitz  # PyMuPDF for PDFs
+import docx  # python-docx for DOCs
 from werkzeug.utils import secure_filename
 import traceback
+import jwt  # PyJWT for decoding JWT tokens
 
 # Load environment variables
 load_dotenv()
 
 # Set up MongoDB connection
 mongo_url = os.getenv("MONGO_URI")
-
-# Debugging: Check if MongoDB URI is loaded correctly
 if not mongo_url:
     print("❌ ERROR: MONGO_URI is not set properly in the .env file.")
 
@@ -24,33 +23,52 @@ summaries_collection = db["summaries"]
 
 # Set OpenAI API Key
 openai.api_key = os.getenv("OPENAI_API_KEY")
+jwt_secret = os.getenv("JWT_SECRET_KEY")  # Ensure this is stored securely
 
-# Create a Blueprint for the summarization route
+# Create a Blueprint for summarization routes
 summarization_bp = Blueprint("summarization", __name__)
 
-def extract_text_from_pdf(file):
+def extract_user_id():
+    """Extracts user ID from JWT token in request headers"""
+    token = request.headers.get("Authorization")
+    
+    if not token:
+        print("❌ No Authorization token found in request headers")
+        return None
+
     try:
-        # ✅ Read the file as a byte stream
+        decoded_token = jwt.decode(token, jwt_secret, algorithms=["HS256"])
+        print("✅ Decoded Token:", decoded_token)  # Debugging
+        return decoded_token.get("sub", {}).get("id")  # Extract user ID from "sub"
+    except jwt.ExpiredSignatureError:
+        print("❌ Token expired")
+        return None
+    except jwt.InvalidTokenError:
+        print("❌ Invalid token")
+        return None
+
+
+def extract_text_from_pdf(file):
+    """Extracts text from PDF files"""
+    try:
         pdf_document = fitz.open(stream=file.read(), filetype="pdf") 
-        text = ""
-
-        # ✅ Extract text from each page
-        for page in pdf_document:
-            text += page.get_text("text") + "\n"
-
+        text = "".join([page.get_text("text") + "\n" for page in pdf_document])
         return text
     except Exception as e:
         print(f"❌ PDF Extraction Error: {e}")
         return None
 
 def extract_text_from_docx(docx_path):
-    """Extracts text from a DOCX file."""
+    """Extracts text from DOCX files"""
     doc = docx.Document(docx_path)
     return "\n".join([para.text for para in doc.paragraphs])
 
- # Route to summarize text
 @summarization_bp.route("/summarize", methods=["POST"])
 def summarize_text():
+    user_id = extract_user_id()
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+
     data = request.json
     text = data.get("text", "")
 
@@ -64,16 +82,14 @@ def summarize_text():
         )
         summary = response["choices"][0]["message"]["content"]
 
-        # Debugging: Print the summary before storing
-        print(f"✅ Generated Summary: {summary}")
+        # Save summary in MongoDB with user ID
+        insert_result = summaries_collection.insert_one({
+            "user_id": user_id,
+            "original_text": text,
+            "summary": summary
+        })
 
-        # Save summary in MongoDB
-        insert_result = summaries_collection.insert_one({"original_text": text, "summary": summary})
-
-        # Debugging: Check if the insert was successful
-        print(f"✅ MongoDB Inserted ID: {insert_result.inserted_id}")
-
-        return jsonify({"summary": summary})
+        return jsonify({"summary": summary, "summary_id": str(insert_result.inserted_id)})
 
     except Exception as e:
         print(f"❌ ERROR: {str(e)}")
@@ -81,21 +97,20 @@ def summarize_text():
 
 @summarization_bp.route("/upload", methods=["POST"])
 def upload_file():
+    user_id = extract_user_id()
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+
     try:
         if "file" not in request.files:
             return jsonify({"error": "No file part"}), 400
 
         file = request.files["file"]
-
         if file.filename == "":
             return jsonify({"error": "No selected file"}), 400
 
         filename = secure_filename(file.filename)
 
-        # Debugging: Print filename
-        print(f"✅ Uploaded File: {filename}")
-
-        # Process PDF or DOCX
         if filename.endswith(".pdf"):
             text = extract_text_from_pdf(file)
         elif filename.endswith(".docx"):
@@ -103,19 +118,35 @@ def upload_file():
         else:
             return jsonify({"error": "Unsupported file format"}), 400
 
-        print(f"✅ Extracted Text: {text[:100]}")  # Print first 100 chars for debugging
-
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": f"Summarize this: {text}"}]
         )
         summary = response["choices"][0]["message"]["content"]
 
-        summaries_collection.insert_one({"original_text": text, "summary": summary})
+        # Save summary in MongoDB with user ID
+        summaries_collection.insert_one({
+            "user_id": user_id,
+            "original_text": text,
+            "summary": summary
+        })
 
         return jsonify({"summary": summary})
 
     except Exception as e:
         print(f"❌ ERROR: {str(e)}")
-        traceback.print_exc()  # ✅ Logs full error in terminal
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
+
+@summarization_bp.route("/summaries", methods=["GET"])
+def get_user_summaries():
+    """Retrieves summaries for the logged-in user"""
+    user_id = extract_user_id()
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    user_summaries = summaries_collection.find({"user_id": user_id})
+    summaries_list = [{"id": str(s["_id"]), "original_text": s["original_text"], "summary": s["summary"]} for s in user_summaries]
+
+    return jsonify({"summaries": summaries_list})
+
