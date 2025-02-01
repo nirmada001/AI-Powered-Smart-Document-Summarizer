@@ -5,6 +5,7 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
 import datetime
+from flask_cors import CORS
 
 # Load environment variables
 load_dotenv()
@@ -17,6 +18,7 @@ users_collection = db["users"]
 
 # Create a Blueprint for the users route
 users_bp = Blueprint("users", __name__)
+CORS(users_bp, origins=["http://localhost:3000"], supports_credentials=True)
 
 # Route to register a new user
 @users_bp.route("/register", methods=["POST"])
@@ -71,3 +73,11 @@ def login_user():
     print("Generated Token Data:", user_data)  # Debugging statement
 
     return jsonify({"message":"Login successful", "access_token": access_token}), 200
+
+# Route to get user details
+@users_bp.route("/user", methods=["GET"])
+@jwt_required()
+def get_user():
+    current_user = get_jwt_identity()
+    user = users_collection.find_one({"email": current_user["email"]}, {"_id": 0, "password": 0})
+    return jsonify(user), 200
