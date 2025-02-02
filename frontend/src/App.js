@@ -6,6 +6,7 @@ import Register from "./components/Register";
 import Home from "./components/Home";
 import Summarizer from "./components/Summarizer";
 import UserDetails from "./components/UserDetails";
+import SummaryDetails from "./components/SummaryDetails";
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/summarizer" element={<Summarizer />} />
         <Route path="/userdetails" element={<UserDetails />} />
+        <Route path="/summary/:id" element={<SummaryDetails />} />
       </Routes>
     </Router>
   );

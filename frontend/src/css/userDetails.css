@@ -1,0 +1,12 @@
+.icon {
+    cursor: pointer;
+    font-size: 20px;
+  }
+  
+  .view-icon {
+    color: #007bff;
+  }
+  
+  .delete-icon {
+    color: red;
+  }

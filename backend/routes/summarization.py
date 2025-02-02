@@ -66,6 +66,7 @@ def extract_text_from_docx(docx_path):
     doc = docx.Document(docx_path)
     return "\n".join([para.text for para in doc.paragraphs])
 
+# Route to summarize text
 @summarization_bp.route("/summarize", methods=["POST"])
 def summarize_text():
     user_id = extract_user_id()
@@ -88,26 +89,41 @@ def summarize_text():
     prompt = f"{length_prompts.get(summary_length, length_prompts['medium'])} \n\n{text}"
 
     try:
+        #Generate the summary using OpenAI's GPT-3.5 model
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": prompt}]
         )
         summary = response["choices"][0]["message"]["content"]
 
+        #Generate a title for the summary
+        title_prompt = f"Generate a short, meaningful title for the following summary: \n\n{summary}"
+        title_response = openai.ChatCompletion.create(
+            model = "gpt-3.5-turbo",
+            messages = [{"role": "user", "content": title_prompt}]
+        )
+        generated_title = title_response["choices"][0]["message"]["content"].strip()
+
         # Save summary in MongoDB with user ID and length
         insert_result = summaries_collection.insert_one({
             "user_id": user_id,
             "original_text": text,
             "summary": summary,
-            "summary_length": summary_length
+            "summary_length": summary_length,
+            "title": generated_title
         })
 
-        return jsonify({"summary": summary, "summary_id": str(insert_result.inserted_id)})
+        return jsonify({
+            "summary": summary,
+            "summary_id": str(insert_result.inserted_id),
+            "title": generated_title
+            })
 
     except Exception as e:
         print(f"❌ ERROR: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
+# Route to upload a file and summarize its content	
 @summarization_bp.route("/upload", methods=["POST"])
 def upload_file():
     user_id = extract_user_id()
@@ -147,15 +163,28 @@ def upload_file():
         )
         summary = response["choices"][0]["message"]["content"]
 
+        # 🔹 Generate a title based on the summary
+        title_prompt = f"Generate a short, meaningful title for the following summary:\n\n{summary}"
+        title_response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": title_prompt}]
+        )
+        generated_title = title_response["choices"][0]["message"]["content"].strip()
+
         # Save summary in MongoDB with user ID and selected length
         summaries_collection.insert_one({
             "user_id": user_id,
             "original_text": text,
             "summary": summary,
-            "summary_length": summary_length
+            "summary_length": summary_length,
+            "title": generated_title
         })
 
-        return jsonify({"summary": summary, "summary_length": summary_length})
+        return jsonify({
+            "summary": summary, 
+            "summary_length": summary_length,
+            "title": generated_title
+            })
 
     except Exception as e:
         print(f"❌ ERROR: {str(e)}")
@@ -182,10 +211,8 @@ def get_user_summaries():
         for summary in summaries:
             formatted_summaries.append({
                 "_id": str(summary["_id"]),  # Convert ObjectId to string
-                "original_text": summary.get("original_text", ""),
-                "summary": summary.get("summary", ""),
                 "summary_length": summary.get("summary_length", "N/A"),
-                "created_at": summary.get("created_at", datetime.now().isoformat())  # Default if missing
+                "title": summary.get("title", "N/A")  # Default if missing
             })
 
         return jsonify({"summaries": formatted_summaries}), 200
@@ -193,3 +220,46 @@ def get_user_summaries():
     except Exception as e:
         print(f"❌ ERROR: {str(e)}")
         return jsonify({"error": str(e)}), 500
+    
+# # Route to get a specific summary
+@summarization_bp.route("/summary/<summary_id>", methods=["GET"])
+@jwt_required()
+def get_summary(summary_id):
+    # Extract user details from JWT
+    user_details = get_jwt_identity()
+    user_id = user_details.get("id")  # Get user ID from JWT token
+
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    summary = summaries_collection.find_one({"_id": ObjectId(summary_id), "user_id": user_id})
+
+    if not summary:
+        return jsonify({"error": "Summary not found"}), 404
+    
+    return jsonify({
+        "_id": str(summary["_id"]),
+        "original_text": summary.get("original_text", "N/A"),
+        "summary": summary.get("summary", "N/A"),
+        "summary_length": summary.get("summary_length", "N/A"),
+        "title": summary.get("title", "N/A")
+    })
+
+
+# # Route to delete a specific summary
+@summarization_bp.route("/summary/<summary_id>", methods=["DELETE"])
+@jwt_required()
+def delete_summary(summary_id):
+    # Extract user details from JWT
+    user_details = get_jwt_identity()
+    user_id = user_details.get("id")  # Get user ID from JWT token
+
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    result = summaries_collection.delete_one({"_id": ObjectId(summary_id), "user_id": user_id})
+
+    if result.deleted_count == 0:
+        return jsonify({"error": "Summary not found or Unauthorized"}), 404
+
+    return jsonify({"message": "Summary deleted successfully"}), 200

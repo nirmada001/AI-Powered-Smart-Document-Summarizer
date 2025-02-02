@@ -3,6 +3,7 @@ import axios from "axios";
 import "../css/summarizer.css"; // Ensure CSS file exists
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import Navbar from "./Navbar";
 
 const Summarizer = () => {
   const [text, setText] = useState("");
@@ -12,6 +13,7 @@ const Summarizer = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [title, setTitle] = useState("");  // Add title state
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -45,6 +47,7 @@ const Summarizer = () => {
       );
 
       setSummary(response.data.summary);
+      setTitle(response.data.title);
     } catch (error) {
       console.error("Error summarizing text:", error);
     } finally {
@@ -77,6 +80,7 @@ const Summarizer = () => {
       );
 
       setSummary(response.data.summary);
+      setTitle(response.data.title);
     } catch (error) {
       console.error("Error uploading file:", error);
     } finally {
@@ -86,6 +90,7 @@ const Summarizer = () => {
 
   return (
     <div className="summarizer-container">
+      <Navbar />
       <h2>AI Document Summarizer</h2>
 
       {/* Summary Length Selection */}
@@ -135,6 +140,7 @@ const Summarizer = () => {
       {/* Summary Output */}
       {summary && (
         <div className="summary-output">
+          <h3>📌 Title: {title}</h3> {/* 🔹 Display the generated title */}
           <h3>Summary ({summaryLength}):</h3>
           <p>{summary}</p>
         </div>

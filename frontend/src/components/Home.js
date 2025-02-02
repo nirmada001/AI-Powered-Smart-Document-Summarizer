@@ -31,22 +31,12 @@ const Home = () => {
         }
     }, [navigate]);  
 
-    // Logout function
-    const handleLogout = () => {
-        localStorage.removeItem('token'); // Remove token
-        setUser(null); // Clear user state
-        navigate('/login'); // Redirect to login page
-    };
 
     return (
         <div>
             <Navbar />
             <h1>Welcome {user ? user.name || 'Guest' : 'Guest'} to AI Document Summarizer</h1>
-            {user && (
-                <button onClick={handleLogout} style={{ margin: "10px", padding: "8px 12px", cursor: "pointer" }}>
-                    Logout
-                </button>
-            )}
+            
             <Footer />
         </div>
     );

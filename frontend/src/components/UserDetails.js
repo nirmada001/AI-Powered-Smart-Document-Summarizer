@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FaEye, FaTrash } from "react-icons/fa";
+import "../css/userDetails.css"; // Ensure CSS file exists
+import Navbar from "./Navbar";
 
 const UserDetails = () => {
   const [user, setUser] = useState(null);
@@ -39,8 +42,28 @@ const UserDetails = () => {
     fetchUserData();
   }, [navigate]);
 
+  const handleDelete = async (summaryId) => {
+    if (!window.confirm("Are you sure you want to delete this summary?")) return;
+  
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(
+        `http://127.0.0.1:5000/api/summarization/summary/${summaryId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+  
+      // Remove the deleted summary from state
+      setSummaries(summaries.filter((summary) => summary._id !== summaryId));
+    } catch (error) {
+      console.error("Error deleting summary:", error);
+    }
+  };
+  
+
   return (
+    
     <div className="user-details-container">
+      <Navbar/>
       <h2>User Profile</h2>
 
       {loading ? (
@@ -55,11 +78,16 @@ const UserDetails = () => {
           {summaries.length > 0 ? (
             <ul>
               {summaries.map((summary) => (
-                <li key={summary._id}>
-                  <p><strong>Original Text:</strong> {summary.original_text}</p>
-                  <p><strong>Summary:</strong> {summary.summary}</p>
+                <li key={summary._id} className="summary-item">
+                  <p><strong>Summary Title:</strong> {summary.title}</p>
                   <p><strong>Length:</strong> {summary.summary_length}</p>
-                  <p><strong>Date:</strong> {new Date(summary.created_at).toLocaleDateString()}</p>
+
+                  {/* View & Delete Icons */}
+                  <div className="summary-actions">
+                    <FaEye className="icon view-icon" onClick={() => navigate(`/summary/${summary._id}`)} />
+                    <FaTrash className="icon delete-icon" onClick={() => handleDelete(summary._id)} />
+                  </div>
+
                   <hr />
                 </li>
               ))}
@@ -67,6 +95,7 @@ const UserDetails = () => {
           ) : (
             <p>No summaries found.</p>
           )}
+
         </div>
       ) : (
         <p>User not found.</p>
