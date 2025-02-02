@@ -39,7 +39,7 @@ const Summarizer = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://127.0.0.1:5000/summarize",
+        "http://127.0.0.1:5000/api/summarization/summarize",
         { text, summary_length: summaryLength },
         { headers: { Authorization: token } }
       );
@@ -66,7 +66,7 @@ const Summarizer = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://127.0.0.1:5000/upload",
+        "http://127.0.0.1:5000/api/summarization/upload",
         formData,
         {
           headers: {

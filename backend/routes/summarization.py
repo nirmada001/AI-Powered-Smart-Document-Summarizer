@@ -8,6 +8,9 @@ import docx  # python-docx for DOCs
 from werkzeug.utils import secure_filename
 import traceback
 import jwt  # PyJWT for decoding JWT tokens
+from bson import ObjectId
+from datetime import datetime
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 # Load environment variables
 load_dotenv()
@@ -159,23 +162,34 @@ def upload_file():
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
-
-@summarization_bp.route("/history", methods=["GET"])
+# Route to get summaries history
+@summarization_bp.route("/SummariesHistory", methods=["GET"])
+@jwt_required()
 def get_user_summaries():
-    user_id = extract_user_id()  # Extract user ID from token
+    # Extract user details from JWT
+    user_details = get_jwt_identity()
+    user_id = user_details.get("id")  # Get user ID from JWT token
+
     if not user_id:
         return jsonify({"error": "Unauthorized"}), 401
 
     try:
+        # Find summaries belonging to the user
         summaries = list(summaries_collection.find({"user_id": user_id}))
-        
-        for summary in summaries:
-            summary["_id"] = str(summary["_id"])  # Convert ObjectId to string
 
-        return jsonify({"summaries": summaries})
+        # Convert _id to string and ensure created_at exists
+        formatted_summaries = []
+        for summary in summaries:
+            formatted_summaries.append({
+                "_id": str(summary["_id"]),  # Convert ObjectId to string
+                "original_text": summary.get("original_text", ""),
+                "summary": summary.get("summary", ""),
+                "summary_length": summary.get("summary_length", "N/A"),
+                "created_at": summary.get("created_at", datetime.now().isoformat())  # Default if missing
+            })
+
+        return jsonify({"summaries": formatted_summaries}), 200
 
     except Exception as e:
         print(f"❌ ERROR: {str(e)}")
         return jsonify({"error": str(e)}), 500
-
-

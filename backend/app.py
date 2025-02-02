@@ -17,7 +17,7 @@ app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
 jwt = JWTManager(app)
 
 # Register Blueprints
-app.register_blueprint(summarization_bp)
+app.register_blueprint(summarization_bp, url_prefix="/api/summarization")  # Register the blueprint
 
 app.register_blueprint(users_bp, url_prefix="/api/users")
 
