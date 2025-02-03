@@ -10,10 +10,12 @@ const Summarizer = () => {
   const [summary, setSummary] = useState("");
   const [file, setFile] = useState(null);
   const [summaryLength, setSummaryLength] = useState("medium"); // Default to Medium
+  const [summaryTone, setSummaryTone] = useState("professional"); // Default to professional
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [title, setTitle] = useState("");  // Add title state
+  const [tone, setTone] = useState("");  // Add tone state
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -42,12 +44,13 @@ const Summarizer = () => {
       const token = localStorage.getItem("token");
       const response = await axios.post(
         "http://127.0.0.1:5000/api/summarization/summarize",
-        { text, summary_length: summaryLength },
-        { headers: { Authorization: token } }
+        { text, summary_length: summaryLength, summary_tone: summaryTone },
+        { headers: { Authorization: `Bearer ${token}` }}
       );
 
       setSummary(response.data.summary);
       setTitle(response.data.title);
+      setTone(response.data.summary_tone);
     } catch (error) {
       console.error("Error summarizing text:", error);
     } finally {
@@ -64,6 +67,7 @@ const Summarizer = () => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("summary_length", summaryLength);
+    formData.append("summary_tone", summaryTone);
 
     setLoading(true);
     try {
@@ -81,6 +85,7 @@ const Summarizer = () => {
 
       setSummary(response.data.summary);
       setTitle(response.data.title);
+      setTone(response.data.summary_tone);
     } catch (error) {
       console.error("Error uploading file:", error);
     } finally {
@@ -114,6 +119,27 @@ const Summarizer = () => {
           Detailed
         </button>
       </div>
+      {/* Summary Tone Selection */}
+      <div className="summary-options">
+        <button
+          className={summaryTone === "professional" ? "active" : ""}
+          onClick={() => setSummaryTone("professional")}
+        >
+          Professional
+        </button>
+        <button
+          className={summaryTone === "casual" ? "active" : ""}
+          onClick={() => setSummaryTone("casual")}
+        >
+          Casual
+        </button>
+        <button
+          className={summaryTone === "academic" ? "active" : ""}
+          onClick={() => setSummaryTone("academic")}
+        >
+          Academic
+        </button>
+      </div>
 
       {/* Text Summarization */}
       <textarea
@@ -138,13 +164,17 @@ const Summarizer = () => {
       </button>
 
       {/* Summary Output */}
-      {summary && (
+      {summary ? (
         <div className="summary-output">
-          <h3>📌 Title: {title}</h3> {/* 🔹 Display the generated title */}
-          <h3>Summary ({summaryLength}):</h3>
+          <h3>📌 Title: {title}</h3>
+          <h3>Summary Length: {summaryLength}</h3>
+          <h3>Tone: {summaryTone}</h3>
           <p>{summary}</p>
         </div>
+      ) : (
+        <p style={{ fontStyle: "italic", color: "gray" }}>No summary yet. Enter text or upload a file.</p>
       )}
+
     </div>
   );
 };

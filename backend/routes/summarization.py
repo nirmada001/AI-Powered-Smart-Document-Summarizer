@@ -76,6 +76,7 @@ def summarize_text():
     data = request.json
     text = data.get("text", "")
     summary_length = data.get("summary_length", "medium")  # Default to medium
+    summary_tone = data.get("summary_tone", "professional")  # Default to neutral
 
     if not text:
         return jsonify({"error": "No text provided"}), 400
@@ -86,7 +87,14 @@ def summarize_text():
         "medium": "Provide a balanced summary (3-5 sentences).",
         "detailed": "Provide a detailed summary (multiple paragraphs)."
     }
-    prompt = f"{length_prompts.get(summary_length, length_prompts['medium'])} \n\n{text}"
+
+    # Adjust the prompt based on the selected tone
+    tone_prompts = {
+        "professional": "Provide a clear and concise summary with a formal tone.",
+        "casual": "Summarize in a simple and engaging way, casual manner",
+        "academic": "Summarize in a well-structured, research-based manner with formal language."
+    }
+    prompt = f"{length_prompts.get(summary_length, length_prompts['medium'])} {tone_prompts.get(summary_tone, tone_prompts['professional'])}\n\n{text}"
 
     try:
         #Generate the summary using OpenAI's GPT-3.5 model
@@ -110,13 +118,15 @@ def summarize_text():
             "original_text": text,
             "summary": summary,
             "summary_length": summary_length,
-            "title": generated_title
+            "title": generated_title,
+            "summary_tone": summary_tone
         })
 
         return jsonify({
             "summary": summary,
             "summary_id": str(insert_result.inserted_id),
-            "title": generated_title
+            "title": generated_title,
+            "summary_tone": summary_tone
             })
 
     except Exception as e:
@@ -136,6 +146,7 @@ def upload_file():
 
         file = request.files["file"]
         summary_length = request.form.get("summary_length", "medium")  # Default to medium
+        summary_tone = request.form.get("summary_tone", "professional")  # Default to professional
 
         if file.filename == "":
             return jsonify({"error": "No selected file"}), 400
@@ -155,7 +166,15 @@ def upload_file():
             "medium": "Provide a balanced summary (3-5 sentences).",
             "detailed": "Provide a detailed summary (multiple paragraphs)."
         }
-        prompt = f"{length_prompts.get(summary_length, length_prompts['medium'])} \n\n{text}"
+
+        # Adjust the prompt based on the selected tone
+        tone_prompts = {
+            "professional": "Provide a clear and concise summary with a formal tone.",
+            "casual": "Summarize in a simple and engaging way, casual manner",
+            "academic": "Summarize in a well-structured, research-based manner with formal language."
+        }
+
+        prompt = f"{length_prompts.get(summary_length, length_prompts['medium'])} {tone_prompts.get(summary_tone, tone_prompts['professional'])}\n\n{text}"
 
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
@@ -177,13 +196,15 @@ def upload_file():
             "original_text": text,
             "summary": summary,
             "summary_length": summary_length,
-            "title": generated_title
+            "title": generated_title,
+            "summary_tone": summary_tone
         })
 
         return jsonify({
             "summary": summary, 
             "summary_length": summary_length,
-            "title": generated_title
+            "title": generated_title,
+            "sumamry_tone": summary_tone
             })
 
     except Exception as e:
@@ -212,7 +233,8 @@ def get_user_summaries():
             formatted_summaries.append({
                 "_id": str(summary["_id"]),  # Convert ObjectId to string
                 "summary_length": summary.get("summary_length", "N/A"),
-                "title": summary.get("title", "N/A")  # Default if missing
+                "title": summary.get("title", "N/A"), # Default if missing
+                "summary_tone": summary.get("summary_tone", "N/A")
             })
 
         return jsonify({"summaries": formatted_summaries}), 200
@@ -242,7 +264,8 @@ def get_summary(summary_id):
         "original_text": summary.get("original_text", "N/A"),
         "summary": summary.get("summary", "N/A"),
         "summary_length": summary.get("summary_length", "N/A"),
-        "title": summary.get("title", "N/A")
+        "title": summary.get("title", "N/A"),
+        "summaryTone": summary.get("summary_tone", "N/A")
     })
 
 

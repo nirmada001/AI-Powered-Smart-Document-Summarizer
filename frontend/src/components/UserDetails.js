@@ -81,6 +81,7 @@ const UserDetails = () => {
                 <li key={summary._id} className="summary-item">
                   <p><strong>Summary Title:</strong> {summary.title}</p>
                   <p><strong>Length:</strong> {summary.summary_length}</p>
+                  <p><strong>Tone:</strong> {summary.summary_tone}</p>
 
                   {/* View & Delete Icons */}
                   <div className="summary-actions">

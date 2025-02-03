@@ -40,6 +40,7 @@ const SummaryDetails = () => {
         <div>
           <p><strong>Title:</strong> {summary.title}</p>
           <p><strong>Created At:</strong> {summary.created_at}</p>
+          <p><strong>Tone:</strong> {summary.tone}</p>
           <p><strong>Original Text:</strong> {summary.original_text}</p>
           <p><strong>Summary ({summary.summary_length}):</strong> {summary.summary}</p>
 
