@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import "../css/summarizer.css"; // Ensure CSS file exists
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Navbar from "./Navbar";
+import { debounce, set } from "lodash";
 
 const Summarizer = () => {
   const [text, setText] = useState("");
@@ -33,30 +34,65 @@ const Summarizer = () => {
     }
   }, [navigate]);
 
-  const handleSummarize = async () => {
-    if (!text.trim()) {
-      alert("Please enter text to summarize");
+  // const handleSummarize = async () => {
+  //   if (!text.trim()) {
+  //     alert("Please enter text to summarize");
+  //     return;
+  //   }
+
+  //   setLoading(true);
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     const response = await axios.post(
+  //       "http://127.0.0.1:5000/api/summarization/summarize",
+  //       { text, summary_length: summaryLength, summary_tone: summaryTone },
+  //       { headers: { Authorization: `Bearer ${token}` }}
+  //     );
+
+  //     setSummary(response.data.summary);
+  //     setTitle(response.data.title);
+  //     setTone(response.data.summary_tone);
+  //   } catch (error) {
+  //     console.error("Error summarizing text:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+  //Function to fetch summary with debounce
+  const fetchSummary = async (inputText) =>{
+    if(!inputText.trim()){
+      setSummary("");
       return;
     }
 
     setLoading(true);
-    try {
+    try{
       const token = localStorage.getItem("token");
       const response = await axios.post(
         "http://127.0.0.1:5000/api/summarization/summarize",
-        { text, summary_length: summaryLength, summary_tone: summaryTone },
-        { headers: { Authorization: `Bearer ${token}` }}
+        {text: inputText, summary_length: summaryLength, summary_tone: summaryTone},
+        {headers: {Authorization: `Bearer ${token}`}}
       );
 
       setSummary(response.data.summary);
       setTitle(response.data.title);
       setTone(response.data.summary_tone);
-    } catch (error) {
+    }catch(error){
       console.error("Error summarizing text:", error);
-    } finally {
+    }finally{
       setLoading(false);
     }
   };
+
+  //Debounce API call
+  const debouncedFetchSummary = useCallback(debounce(fetchSummary, 500), [summaryLength, summaryTone]);
+
+  //trigger summarizaton as user types
+  useEffect(()=>{
+    debouncedFetchSummary(text);
+  }, [text, debouncedFetchSummary]);
 
   const handleFileUpload = async () => {
     if (!file) {
@@ -145,13 +181,13 @@ const Summarizer = () => {
       <textarea
         rows="4"
         cols="50"
-        placeholder="Enter text to summarize..."
+        placeholder="Start typing to see real-time summary..."
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
-      <button onClick={handleSummarize} disabled={loading}>
+      {/* <button onClick={handleSummarize} disabled={loading}>
         {loading ? "Summarizing..." : "Summarize Text"}
-      </button>
+      </button> */}
 
       {/* File Upload */}
       <input

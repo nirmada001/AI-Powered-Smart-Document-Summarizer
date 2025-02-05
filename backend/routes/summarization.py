@@ -68,8 +68,12 @@ def extract_text_from_docx(docx_path):
 
 # Route to summarize text
 @summarization_bp.route("/summarize", methods=["POST"])
+@jwt_required()
 def summarize_text():
-    user_id = extract_user_id()
+    # Extract user details from JWT
+    user_details = get_jwt_identity()
+    user_id = user_details.get("id")  # Get user ID from JWT token
+
     if not user_id:
         return jsonify({"error": "Unauthorized"}), 401
 
@@ -78,8 +82,8 @@ def summarize_text():
     summary_length = data.get("summary_length", "medium")  # Default to medium
     summary_tone = data.get("summary_tone", "professional")  # Default to neutral
 
-    if not text:
-        return jsonify({"error": "No text provided"}), 400
+    if not text.strip():
+        return jsonify({"summary":""}), 400
 
     # Adjust the prompt based on the selected length
     length_prompts = {
@@ -112,19 +116,19 @@ def summarize_text():
         )
         generated_title = title_response["choices"][0]["message"]["content"].strip()
 
-        # Save summary in MongoDB with user ID and length
-        insert_result = summaries_collection.insert_one({
-            "user_id": user_id,
-            "original_text": text,
-            "summary": summary,
-            "summary_length": summary_length,
-            "title": generated_title,
-            "summary_tone": summary_tone
-        })
+        # # Save summary in MongoDB with user ID and length
+        # insert_result = summaries_collection.insert_one({
+        #     "user_id": user_id,
+        #     "original_text": text,
+        #     "summary": summary,
+        #     "summary_length": summary_length,
+        #     "title": generated_title,
+        #     "summary_tone": summary_tone
+        # })
 
         return jsonify({
             "summary": summary,
-            "summary_id": str(insert_result.inserted_id),
+            # "summary_id": str(insert_result.inserted_id),
             "title": generated_title,
             "summary_tone": summary_tone
             })
