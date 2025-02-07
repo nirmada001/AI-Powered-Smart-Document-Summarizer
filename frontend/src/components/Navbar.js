@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { FaBars, FaTimes } from "react-icons/fa"; // Import icons
 import "../css/navbar.css"; // Make sure to create a CSS file for styling
 
 const Navbar = () => {
+  const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -15,7 +17,12 @@ const Navbar = () => {
       <div className="logo">
         <Link to="/">AI Summarizer</Link>
       </div>
-      <ul className="nav-links">
+      
+      <div className="hamburger" onClick={() => setIsMobile(!isMobile)}>
+        {isMobile ? <FaTimes /> : <FaBars />}
+      </div>
+      
+      <ul className={isMobile ? "nav-links-mobile" : "nav-links"} onClick={() => setIsMobile(false)}>
         <li>
           <Link to="/">Home</Link>
         </li>

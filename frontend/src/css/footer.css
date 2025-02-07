@@ -1,0 +1,47 @@
+.footer-container {
+    background-color: #121E26;  /* Dark background to match the theme */
+    color: #E3F2FD;  /* Light text for contrast */
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .footer-content p {
+    font-size: 16px;
+    margin: 10px 0;
+  }
+  
+  .footer-links {
+    margin-top: 10px;
+  }
+  
+  .footer-link {
+    color: #00ACC1;  /* Accent color for the links */
+    font-size: 14px;
+    margin: 0 10px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .footer-link:hover {
+    color: #26A69A;  /* Light teal color on hover */
+  }
+  
+  @media (max-width: 768px) {
+    .footer-content {
+      padding: 15px;
+    }
+  
+    .footer-link {
+      font-size: 12px;
+    }
+  }
+  

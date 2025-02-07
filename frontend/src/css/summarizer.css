@@ -1,55 +1,66 @@
 .summarizer-container {
-    text-align: center;
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
+  background-color: #121E26;
+  color: #E3F2FD;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.title {
+  text-align: center;
+  color: #00ACC1;
+}
+
+/* Grid Layout for Inputs and Output */
+.summarizer-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  padding: 20px;
+}
+
+.input-section, .output-section {
+  background-color: #1B2A34;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+textarea {
+  width: 100%;
+  background-color: #1B2A34;
+  border: 1px solid #00ACC1;
+  color: #E3F2FD;
+  padding: 10px;
+}
+
+.summary-options button {
+  background-color: #00796B;
+  border: none;
+  color: #E3F2FD;
+  padding: 10px;
+  margin: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.summary-options button.active, .summary-options button:hover {
+  background-color: #00ACC1;
+}
+
+.summary-output {
+  padding: 15px;
+  background-color: #1B2A34;
+  border: 1px solid #00ACC1;
+  border-radius: 5px;
+}
+
+.placeholder-text {
+  font-style: italic;
+  color: gray;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .summarizer-content {
+    grid-template-columns: 1fr;
   }
-  
-  textarea {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-  }
-  
-  .summary-options {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 15px;
-  }
-  
-  .summary-options button {
-    margin: 0 5px;
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
-    background-color: lightgray;
-    border-radius: 5px;
-  }
-  
-  .summary-options .active {
-    background-color: #4CAF50;
-    color: white;
-  }
-  
-  button {
-    margin-top: 10px;
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  button:disabled {
-    background-color: gray;
-    cursor: not-allowed;
-  }
-  
-  .summary-output {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    background: #f9f9f9;
-    text-align: justify;
-  }
-  
+}

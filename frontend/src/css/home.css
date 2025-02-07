@@ -1,0 +1,140 @@
+/* Remove default margins & paddings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Home Page Styles */
+.home-container {
+    background-color: #121E26;
+    color: #E3F2FD;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, #00796B 30%, #00ACC1 100%);
+    padding: 100px 20px;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 1.2rem;
+}
+
+.cta-button {
+    background-color: #00ACC1;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1rem;
+    color: #121E26;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 15px;
+    transition: 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #26A69A;
+}
+
+/* Features Section */
+.features {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.features h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    max-width: 900px;
+    margin: auto;
+}
+
+.feature {
+    background-color: #1B2A34;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* How It Works */
+.how-it-works {
+    padding: 60px 20px;
+    text-align: center;
+    background-color: #1B2A34;
+}
+
+.how-it-works h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.steps {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+.step {
+    background-color: #121E26;
+    padding: 15px;
+    border-radius: 8px;
+    width: 250px;
+    text-align: center;
+}
+
+/* Testimonials */
+.testimonials {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.testimonial {
+    background-color: #1B2A34;
+    padding: 15px;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+.testimonial p {
+    font-size: 1.1rem;
+    font-style: italic;
+}
+
+.testimonial span {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #00ACC1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .steps {
+        flex-direction: column;
+        align-items: center;
+    }
+}

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "./Navbar";
+import "../css/summaryDetails.css";
 
 const SummaryDetails = () => {
   const { id } = useParams(); // Get summary ID from URL
@@ -31,15 +32,15 @@ const SummaryDetails = () => {
 
   return (
     <div className="summary-details-container">
-        <Navbar/>
+      <Navbar />
       <h2>Summary Details</h2>
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="loading-text">Loading...</p>
       ) : summary ? (
-        <div>
+        <div className="summary-info">
           <p><strong>Title:</strong> {summary.title}</p>
-          <p><strong>Created At:</strong> {summary.created_at}</p>
+          <p><strong>Created At:</strong> {new Date(summary.created_at).toLocaleDateString()}</p>
           <p><strong>Tone:</strong> {summary.tone}</p>
           <p><strong>Original Text:</strong> {summary.original_text}</p>
           <p><strong>Summary ({summary.summary_length}):</strong> {summary.summary}</p>

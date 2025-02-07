@@ -44,63 +44,62 @@ const UserDetails = () => {
 
   const handleDelete = async (summaryId) => {
     if (!window.confirm("Are you sure you want to delete this summary?")) return;
-  
+
     try {
       const token = localStorage.getItem("token");
       await axios.delete(
         `http://127.0.0.1:5000/api/summarization/summary/${summaryId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-  
+
       // Remove the deleted summary from state
       setSummaries(summaries.filter((summary) => summary._id !== summaryId));
     } catch (error) {
       console.error("Error deleting summary:", error);
     }
   };
-  
 
   return (
-    
     <div className="user-details-container">
-      <Navbar/>
-      <h2>User Profile</h2>
+      <Navbar />
+      <div className="user-details-content">
+        <h2>User Profile</h2>
 
-      {loading ? (
-        <p>Loading...</p>
-      ) : user ? (
-        <div>
-          <p><strong>Name:</strong> {user.name || "N/A"}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Joined:</strong> {user.created_at ? new Date(user.created_at).toLocaleDateString() : "N/A"}</p>
+        {loading ? (
+          <p>Loading...</p>
+        ) : user ? (
+          <div className="profile-info">
+            <p><strong>Name:</strong> {user.name || "N/A"}</p>
+            <p><strong>Email:</strong> {user.email}</p>
+            <p><strong>Joined:</strong> {user.created_at ? new Date(user.created_at).toLocaleDateString() : "N/A"}</p>
 
-          <h3>Summarization History</h3>
-          {summaries.length > 0 ? (
-            <ul>
-              {summaries.map((summary) => (
-                <li key={summary._id} className="summary-item">
-                  <p><strong>Summary Title:</strong> {summary.title}</p>
-                  <p><strong>Length:</strong> {summary.summary_length}</p>
-                  <p><strong>Tone:</strong> {summary.summary_tone}</p>
+            <h3>Summarization History</h3>
+            {summaries.length > 0 ? (
+              <ul className="summary-list">
+                {summaries.map((summary) => (
+                  <li key={summary._id} className="summary-item">
+                    <p><strong>Summary Title:</strong> {summary.title}</p>
+                    <p><strong>Length:</strong> {summary.summary_length}</p>
+                    <p><strong>Tone:</strong> {summary.summary_tone}</p>
 
-                  {/* View & Delete Icons */}
-                  <div className="summary-actions">
-                    <FaEye className="icon view-icon" onClick={() => navigate(`/summary/${summary._id}`)} />
-                    <FaTrash className="icon delete-icon" onClick={() => handleDelete(summary._id)} />
-                  </div>
+                    {/* View & Delete Icons */}
+                    <div className="summary-actions">
+                      <FaEye className="icon view-icon" onClick={() => navigate(`/summary/${summary._id}`)} />
+                      <FaTrash className="icon delete-icon" onClick={() => handleDelete(summary._id)} />
+                    </div>
 
-                  <hr />
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No summaries found.</p>
-          )}
-
-        </div>
-      ) : (
-        <p>User not found.</p>
-      )}
+                    <hr />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No summaries found.</p>
+            )}
+          </div>
+        ) : (
+          <p>User not found.</p>
+        )}
+      </div>
     </div>
   );
 };
