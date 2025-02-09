@@ -1,74 +1,134 @@
-.main-div{
-    display: flex;
-    justify-content:center;
-    align-items: center;
-    height: 100vh;
-    margin: 0%;
-    background-color: rgba(192, 245, 245, 0.41);
+/* General Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
 }
 
-.register-div{
-    width: 28%;
-    height: 70%;
-    background-color: #f5f2f2e5;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+body {
+  background-color: #121E26; /* Dark Blue-Gray */
+  color: #E3F2FD; /* Soft White-Blue */
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-.title{
-    text-align: center;
-    font-size: 30px;
-    font-weight: bold;
-    margin-bottom: 20px;
+/* Main Container */
+.main-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
 }
 
-.form-group{
-    margin-bottom: 20px;
+/* Register Box */
+.register-div {
+  background-color: #1B2A34; /* Deep Teal */
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.2);
+  width: 350px;
+  text-align: center;
 }
 
-.label{
-    font-size: 15px;
-    font-weight: bold;
+/* Title */
+.title {
+  color: #00ACC1; /* Cyan */
+  margin-bottom: 20px;
 }
 
-.input{
+/* Form Group */
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* Input Fields */
+.input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #26A69A;
+  border-radius: 5px;
+  background-color: #1B2A34;
+  color: #E3F2FD;
+  font-size: 16px;
+}
+
+.input:focus {
+  border-color: #00ACC1;
+  outline: none;
+  box-shadow: 0px 0px 5px rgba(0, 255, 255, 0.5);
+}
+
+/* Error & Success Messages */
+.error-message, .success-message {
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.error-message {
+  background-color: rgba(255, 0, 0, 0.2);
+  color: #ff4d4d;
+}
+
+.success-message {
+  background-color: rgba(0, 255, 0, 0.2);
+  color: #00ff99;
+}
+
+/* Register Button */
+.register-button {
+  width: 100%;
+  background-color: #00796B; /* Dark Teal */
+  color: #E3F2FD;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.register-button:hover {
+  background-color: #00ACC1;
+  transform: scale(1.05);
+}
+
+.register-button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+/* Login Link */
+p {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.Link {
+  color: #00ACC1;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.Link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 400px) {
+  .register-div {
     width: 90%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    margin: 5px;
-}
-
-.register-button{
-    width: 80%;
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-left: 10%;
-}
-
-.error-message{
-    color: red;
-    text-align: center;
-    font-size: 15px;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-.success-message{
-    color: green;
-    text-align: center;
-    font-size: 15px;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-.Link{
-    text-decoration: none;
+    padding: 20px;
+  }
 }

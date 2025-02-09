@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "./Navbar";
 import "../css/summaryDetails.css";
+import Footer from "./Footer";
 
 const SummaryDetails = () => {
   const { id } = useParams(); // Get summary ID from URL
@@ -50,6 +51,8 @@ const SummaryDetails = () => {
       ) : (
         <p>Summary not found.</p>
       )}
+    
+      <Footer />
     </div>
   );
 };

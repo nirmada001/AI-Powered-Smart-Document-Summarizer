@@ -1,102 +1,100 @@
-/* Remove default margins & paddings */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
-  background-color: #1B2A34; 
-}
-
-/* General User Details Container */
+/* User Details Container */
 .user-details-container {
-
-  margin-top: 50px;
-  color: #E3F2FD;  /* Light Text for Dark Theme */
-}
-
-.user-details-content {
-  background-color: #1B2A34;  /* Dark Background */
-  border-radius: 8px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  max-width: 1200px;
-  margin: 0 auto;  /* Centers the container */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #121E26; /* Dark Mode Background */
+  min-height: 100vh;
+  color: #E3F2FD; /* Soft White-Blue */
+  font-family: Arial, sans-serif;
   padding: 20px;
-  width: 100%;  /* Ensures the container takes full width on smaller screens */
-  box-sizing: border-box; /* Makes sure padding doesn't affect overall width */
-  display: flex;  /* Enables flexbox for child elements */
-  flex-direction: column; /* Aligns child elements vertically */
-  align-items: center;  /* Centers items horizontally */
+  margin-top: 70px;
 }
 
+/* User Details Content */
+.user-details-content {
+  width: 90%;
+  max-width: 800px;
+  background-color: #1B2A34; /* Deep Teal */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
 
-h2 {
-  font-size: 2em;
-  color: #26A69A; /* Teal Color */
-  margin-bottom: 20px;
+/* Profile Info */
+.profile-info {
+  margin-top: 20px;
 }
 
 .profile-info p {
-  font-size: 1.1em;
-  margin: 10px 0;
+  font-size: 16px;
+  margin: 8px 0;
 }
 
 .profile-info strong {
-  color: #00ACC1; /* Cyan for Labels */
+  color: #00ACC1; /* Cyan */
 }
 
-/* Summarization History Styling */
+/* Summarization History */
 h3 {
-  font-size: 1.5em;
-  color: #26A69A;
-  margin-top: 30px;
+  margin-top: 20px;
+  color: #26A69A; /* Teal */
 }
 
-/* Summary List Styling */
+/* Summary List */
 .summary-list {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
 }
 
+/* Summary Item */
 .summary-item {
-  background-color: #263238; /* Slightly lighter background for each summary */
-  border-radius: 8px;
+  background-color: #1E2F3A; /* Darker Teal */
   padding: 15px;
-  margin-bottom: 20px; /* Space between each summary item */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.summary-item:hover {
-  transform: translateY(-5px); /* Adds a slight hover effect */
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15); /* Slightly increased shadow for hover effect */
+  margin: 10px 0;
+  border-radius: 6px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .summary-item p {
-  color: #E3F2FD; /* Light text color for readability */
-  font-size: 16px; /* Slightly smaller font for the summary info */
   margin: 5px 0;
 }
 
+/* Icons */
 .summary-actions {
   display: flex;
+  justify-content: flex-end;
   gap: 15px;
-  justify-content: flex-end; /* Positions the icons to the right */
   margin-top: 10px;
 }
 
 .icon {
-  font-size: 18px; /* Reduced size for icons */
-  color: #00ACC1; /* Accent color */
+  font-size: 18px;
   cursor: pointer;
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition: transform 0.2s ease-in-out;
 }
 
-.icon:hover {
-  color: #26A69A; /* Hover color change */
-  transform: scale(1.2); /* Icon zoom effect on hover */
+.view-icon {
+  color: #00ACC1;
+}
+
+.view-icon:hover {
+  transform: scale(1.1);
+  color: #26A69A;
+}
+
+.delete-icon {
+  color: #FF5252;
+}
+
+.delete-icon:hover {
+  transform: scale(1.1);
+  color: #FF1744;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .user-details-content {
+    width: 100%;
+  }
 }

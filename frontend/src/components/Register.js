@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
-import axios from 'axios'
-import { Link, useNavigate } from 'react-router-dom'
-import '../css/register.css'
-
+import React, { useState } from "react";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import "../css/register.css";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -23,59 +22,71 @@ const Register = () => {
       await axios.post("http://127.0.0.1:5000/api/users/register", {
         name,
         email,
-        password
+        password,
       });
 
       setSuccess("Registration Successful");
-      setTimeout(() => navigate("/login"), 1000); //Redirect to login page after 1 sec
-
+      setTimeout(() => navigate("/login"), 1000); // Redirect to login page after 1 sec
     } catch (err) {
-      setError(err.response?.data?.error || "Registration Failed. Try agin.");
+      setError(err.response?.data?.error || "Registration Failed. Try again.");
+    } finally {
+      setLoading(false); // Ensure loading stops even if registration fails
     }
-
   };
+
   return (
-    <div className='main-div'>
-      <div className='register-div'>
-        <h1 className='title'>Register</h1>
-        {error && <p className='error-message'>{error}</p>}
-        {success && <p className='success-message'>{success}</p>}
+    <div className="main-div">
+      <div className="register-div">
+        <h1 className="title">Register</h1>
+        {error && <p className="error-message">{error}</p>}
+        {success && <p className="success-message">{success}</p>}
         <form onSubmit={handleRegister}>
-          <div className='form-group'>
-            <label htmlFor="name" className='label'>Name</label><br />
-            <input type="text"
+          <div className="form-group">
+            <label htmlFor="name" className="label">Name</label><br />
+            <input
+              type="text"
+              id="name"
               placeholder="Name"
-              value={name} onChange={(e) => setName(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
-              className='input'
+              className="input"
             />
           </div>
-          <div className='form-group'>
-            <label htmlFor="email" className='label'>Email</label><br />
-            <input type="email"
+          <div className="form-group">
+            <label htmlFor="email" className="label">Email</label><br />
+            <input
+              type="email"
+              id="email"
               placeholder="Email"
-              value={email} onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
-              className='input'
+              className="input"
             />
           </div>
-          <div className='form-group'>
-            <label htmlFor="password" className='label'>Password</label><br />
-            <input type="password"
+          <div className="form-group">
+            <label htmlFor="password" className="label">Password</label><br />
+            <input
+              type="password"
+              id="password"
               placeholder="Password"
-              value={password} onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
-              className='input'
+              className="input"
             />
           </div>
-          <p>Already have an account? <Link to="/login" className='Link'>Login</Link></p>
-          <button type="submit" disabled={loading} className='register-button'>
-            {loading ? 'Registering...' : 'Register'}
+          <p>
+            Already have an account? <Link to="/login" className="Link">Login</Link>
+          </p>
+          <button type="submit" disabled={loading} className="register-button">
+            {loading ? "Registering..." : "Register"}
           </button>
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;

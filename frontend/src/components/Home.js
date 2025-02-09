@@ -88,7 +88,7 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* Testimonial Section */}
+            {/* Testimonial Section
             <section className="testimonials">
                 <h2>What Our Users Say</h2>
                 <div className="testimonial">
@@ -99,7 +99,7 @@ const Home = () => {
                     <p>“I love the customizable summary tones. Perfect for students and professionals alike.”</p>
                     <span>- Sarah, Student</span>
                 </div>
-            </section>
+            </section> */}
 
             <Footer />
         </div>

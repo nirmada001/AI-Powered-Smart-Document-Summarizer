@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FaEye, FaTrash } from "react-icons/fa";
 import "../css/userDetails.css"; // Ensure CSS file exists
 import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 const UserDetails = () => {
   const [user, setUser] = useState(null);
@@ -100,6 +101,7 @@ const UserDetails = () => {
           <p>User not found.</p>
         )}
       </div>
+      <Footer />
     </div>
   );
 };
