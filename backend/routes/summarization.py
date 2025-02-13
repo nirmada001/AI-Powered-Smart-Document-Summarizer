@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_file
 import openai
 import os
 from pymongo import MongoClient
@@ -10,7 +10,10 @@ import traceback
 import jwt  # PyJWT for decoding JWT tokens
 from bson import ObjectId
 from datetime import datetime
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from io import BytesIO
+from docx import Document
+from reportlab.pdfgen import canvas
 
 # Load environment variables
 load_dotenv()
@@ -290,3 +293,81 @@ def delete_summary(summary_id):
         return jsonify({"error": "Summary not found or Unauthorized"}), 404
 
     return jsonify({"message": "Summary deleted successfully"}), 200
+
+@summarization_bp.route("/summary/download/<summary_id>", methods=["GET"])
+@jwt_required()
+def download_summary(summary_id):
+    format_type = request.args.get("format", "txt")
+
+    # Extract user details from JWT
+    user_details = get_jwt_identity()
+    user_id = user_details.get("id")
+
+    try:
+        summary = summaries_collection.find_one({"_id": ObjectId(summary_id), "user_id": user_id})
+    except Exception as e:
+        return jsonify({"error": "Invalid summary ID"}), 400
+
+    if not summary:
+        return jsonify({"error": "Summary not found"}), 404
+
+    title = summary.get("title", "Summary")
+    content = summary.get("summary", "Summary content not found")
+
+    if format_type == "txt":
+        return generate_txt(title, content)
+    elif format_type == "docx":
+        return generate_docx(title, content)
+    elif format_type == "pdf":
+        return generate_pdf(title, content)
+    else:
+        return jsonify({"error": "Invalid format"}), 400
+
+
+def generate_txt(title, content):
+    """Generate and return a TXT file"""
+    file_data = BytesIO()
+    file_data.write(f"{title}\n\n{content}".encode("utf-8"))
+    file_data.seek(0)
+
+    return send_file(file_data, mimetype="text/plain", as_attachment=True, download_name=f"{title}.txt")
+
+
+def generate_docx(title, content):
+    """Generate and return a DOCX file"""
+    doc = Document()
+    doc.add_heading(title, level=1)
+    doc.add_paragraph(content)
+
+    file_data = BytesIO()
+    doc.save(file_data)
+    file_data.seek(0)
+
+    return send_file(file_data, mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                     as_attachment=True, download_name=f"{title}.docx")
+
+
+def generate_pdf(title, content):
+    """Generate and return a PDF file"""
+    file_data = BytesIO()
+    pdf = canvas.Canvas(file_data)
+    pdf.setTitle(title)
+    
+    # Draw title
+    pdf.setFont("Helvetica-Bold", 14)
+    pdf.drawString(100, 750, title)
+    
+    # Draw content with proper spacing
+    pdf.setFont("Helvetica", 12)
+    y = 730  # Start below title
+    for line in content.split("\n"):
+        if y < 50:  # Prevent writing beyond the page limit
+            pdf.showPage()  # Create a new page
+            y = 750  # Reset position for the new page
+        pdf.drawString(100, y, line)
+        y -= 20  # Move text down
+
+    pdf.save()
+    file_data.seek(0)
+
+    return send_file(file_data, mimetype="application/pdf", as_attachment=True, download_name=f"{title}.pdf")

@@ -16,13 +16,12 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-
   color: #E3F2FD; /* Soft White-Blue */
   font-family: Arial, sans-serif;
   margin-top: 80px;
 }
 
-/* Summary Title */
+/* Title Styling */
 h2 {
   color: #26A69A; /* Teal */
   margin-bottom: 20px;
@@ -30,32 +29,89 @@ h2 {
 
 /* Summary Information Card */
 .summary-info {
-  width: 90%;
-  max-width: 800px;
+  width: 80%;
   background-color: #1B2A34; /* Deep Teal */
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-.summary-info p {
-  font-size: 16px;
-  margin: 10px 0;
+/* Summary Content Layout */
+.summary-content {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
 }
 
-.summary-info strong {
-  color: #00ACC1; /* Cyan */
+/* Individual Text Boxes */
+.text-box {
+  width: 48%;
+  padding: 15px;
+  border-radius: 5px;
+  background: #0F1C24; /* Darker shade for contrast */
+  border: 1px solid #00ACC1; /* Cyan Border */
+  overflow-y: auto;
+  max-height: 500px; /* Set max height for scrolling */
+}
+
+/* Original Text Box */
+.original-text {
+  border-left: 4px solid #00796B; /* Dark Teal */
+  text-align: justify;
+}
+
+/* Summary Text Box */
+.summary-text {
+  border-left: 4px solid #26A69A; /* Teal */
+  text-align: justify;
+}
+
+/* Scrollbars */
+.text-box::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.text-box::-webkit-scrollbar-track {
+  background: #1B2A34; /* Deep Teal */
+}
+
+.text-box::-webkit-scrollbar-thumb {
+  background: #00ACC1; /* Cyan */
+  border-radius: 5px;
 }
 
 /* Loading Text */
 .loading-text {
   font-size: 18px;
-  color: #26A69A;
+  color: #26A69A; /* Teal */
+}
+
+/* Download Buttons */
+.download-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.download-buttons button {
+  background-color: #00796B; /* Dark Teal */
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0 10px;
+  transition: background 0.3s ease-in-out;
+}
+
+.download-buttons button:hover {
+  background-color: #26A69A; /* Lighter Teal */
 }
 
 /* Go Back Button */
-button {
-  background-color: #00796B; /* Dark Teal */
+.back-button {
+  background-color: #37474F; /* Dark Greyish */
   color: white;
   padding: 10px 15px;
   border: none;
@@ -65,13 +121,18 @@ button {
   transition: background 0.3s ease-in-out;
 }
 
-button:hover {
-  background-color: #26A69A; /* Lighter Teal */
+.back-button:hover {
+  background-color: #5A6268; /* Lighter Grey */
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .summary-info {
+  .summary-content {
+    flex-direction: column;
+  }
+
+  .text-box {
     width: 100%;
+    margin-bottom: 15px;
   }
 }

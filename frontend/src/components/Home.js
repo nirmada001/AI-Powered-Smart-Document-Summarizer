@@ -17,10 +17,16 @@ const Home = () => {
                 const decodedToken = jwtDecode(token);
                 console.log("Decoded Token:", decodedToken);
 
-                const userData = decodedToken.sub; // Extract user details
-                console.log("Extracted User Data:", userData);
+                // Check if the token is expired
+                const currentTime = Date.now() / 1000; // Convert to seconds
+                if (decodedToken.exp < currentTime) {
+                    console.warn("Token expired. Redirecting to login.");
+                    localStorage.removeItem("token");
+                    navigate("/login");
+                    return;
+                }
 
-                setUser(userData);
+                setUser(decodedToken.sub); // Extract user details
             } catch (error) {
                 console.error("Invalid token", error);
                 localStorage.removeItem("token");
@@ -87,19 +93,6 @@ const Home = () => {
                     </div>
                 </div>
             </section>
-
-            {/* Testimonial Section
-            <section className="testimonials">
-                <h2>What Our Users Say</h2>
-                <div className="testimonial">
-                    <p>“This summarizer saved me hours of work! The real-time updates are a game-changer.”</p>
-                    <span>- Alex, Researcher</span>
-                </div>
-                <div className="testimonial">
-                    <p>“I love the customizable summary tones. Perfect for students and professionals alike.”</p>
-                    <span>- Sarah, Student</span>
-                </div>
-            </section> */}
 
             <Footer />
         </div>

@@ -72,7 +72,7 @@ const UserDetails = () => {
           <div className="profile-info">
             <p><strong>Name:</strong> {user.name || "N/A"}</p>
             <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Joined:</strong> {user.created_at ? new Date(user.created_at).toLocaleDateString() : "N/A"}</p>
+            
 
             <h3>Summarization History</h3>
             {summaries.length > 0 ? (
