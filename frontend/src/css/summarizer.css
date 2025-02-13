@@ -1,4 +1,3 @@
-/* Remove default margins & paddings */
 * {
   margin: 0;
   padding: 0;
@@ -9,14 +8,14 @@ html, body {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
-  overflow-y: auto; /* Fixes scrollbar issue */
+  overflow-y: auto;
 }
 
 
-/* General Container */
+/* summarizer Container */
 .summarizer-container {
-  background-color: #121E26; /* Dark Blue-Gray */
-  color: #E3F2FD; /* Soft White-Blue */
+  background-color: #121E26; 
+  color: #E3F2FD;
   min-height: 100vh;
   padding: 20px;
   text-align: center;
@@ -25,13 +24,13 @@ html, body {
   align-items: center;
 }
 
-/* Title */
+
 .summarizer-container h2 {
-  color: #00ACC1; /* Cyan */
+  color: #00ACC1; 
   margin-bottom: 15px;
 }
 
-/* Content Wrapper */
+
 .summarizer-content {
   display: flex;
   justify-content: center;
@@ -45,7 +44,7 @@ html, body {
 /* Input Section (Left Side) */
 .input-section {
   flex: 1;
-  background-color: #1B2A34; /* Deep Teal */
+  background-color: #1B2A34; 
   padding: 20px;
   border-radius: 10px;
   text-align: left;
@@ -56,7 +55,7 @@ html, body {
 /* Output Section (Right Side) */
 .output-section {
   flex: 1;
-  background-color: #1B2A34; /* Deep Teal */
+  background-color: #1B2A34; 
   padding: 20px;
   border-radius: 10px;
   text-align: left;

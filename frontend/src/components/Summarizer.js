@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import "../css/summarizer.css"; // Ensure CSS file exists
+import "../css/summarizer.css"; 
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Navbar from "./Navbar";
@@ -16,8 +16,8 @@ const Summarizer = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [title, setTitle] = useState("");  // Add title state
-  const [tone, setTone] = useState("");  // Add tone state
+  const [title, setTitle] = useState("");  
+  const [tone, setTone] = useState("");  
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -210,7 +210,7 @@ const Summarizer = () => {
           <h3>Summary Output</h3>
           {summary ? (
             <div className="summary-output">
-              <h3>📌 Title: {title}</h3>
+              <h3>Title: {title}</h3>
               <h3>Summary Length: {summaryLength}</h3>
               <h3>Tone: {summaryTone}</h3>
               <p>{summary}</p>

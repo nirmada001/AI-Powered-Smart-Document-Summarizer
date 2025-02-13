@@ -1,6 +1,6 @@
 .footer-container {
-    background-color: #121E26;  /* Dark background to match the theme */
-    color: #E3F2FD;  /* Light text for contrast */
+    background-color: #121E26; 
+    color: #E3F2FD;
     padding: 20px;
     text-align: center;
     position: relative;
@@ -25,7 +25,7 @@
   }
   
   .footer-link {
-    color: #00ACC1;  /* Accent color for the links */
+    color: #00ACC1;  
     font-size: 14px;
     margin: 0 10px;
     text-decoration: none;
@@ -33,7 +33,7 @@
   }
   
   .footer-link:hover {
-    color: #26A69A;  /* Light teal color on hover */
+    color: #26A69A;  
   }
   
   @media (max-width: 768px) {

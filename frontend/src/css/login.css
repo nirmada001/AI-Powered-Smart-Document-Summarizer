@@ -1,15 +1,14 @@
-/* Overall page styling */
 .login-container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #121E26; /* Dark background */
+    background-color: #121E26; 
   }
   
-  /* Card container for login form */
+  /* login form */
   .login-card {
-    background-color: #1B2A34; /* Deep teal background */
+    background-color: #1B2A34;
     border-radius: 10px;
     padding: 30px;
     width: 380px;
@@ -17,7 +16,7 @@
     text-align: center;
   }
   
-  /* Login title */
+ 
   .login-title {
     color: #E3F2FD;
     font-size: 24px;
@@ -30,13 +29,13 @@
     flex-direction: column;
   }
   
-  /* Form Group */
+
   .form-group {
     margin-bottom: 15px;
     text-align: left;
   }
   
-  /* Labels */
+
   .label {
     font-size: 14px;
     color: #E3F2FD;
@@ -44,12 +43,12 @@
     margin-bottom: 5px;
   }
   
-  /* Input Fields */
+ 
   .input {
     width: 100%;
     padding: 10px;
     border-radius: 5px;
-    border: 1px solid #00ACC1; /* Cyan Border */
+    border: 1px solid #00ACC1; 
     background-color: #1B2A34;
     color: #E3F2FD;
     font-size: 14px;
@@ -57,10 +56,10 @@
   
   .input:focus {
     outline: none;
-    border-color: #26A69A; /* Teal on focus */
+    border-color: #26A69A;
   }
   
-  /* Error & Success Messages */
+
   .error-message, .success-message {
     font-size: 14px;
     padding: 8px;
@@ -78,7 +77,6 @@
     color: #26A69A;
   }
   
-  /* Register text */
   .register-text {
     color: #E3F2FD;
     font-size: 14px;
@@ -95,9 +93,9 @@
     color: #26A69A;
   }
   
-  /* Login Button */
+
   .login-button {
-    background-color: #00796B; /* Dark teal */
+    background-color: #00796B; 
     color: #E3F2FD;
     padding: 12px;
     font-size: 16px;
@@ -108,7 +106,7 @@
   }
   
   .login-button:hover {
-    background-color: #26A69A; /* Teal on hover */
+    background-color: #26A69A;
   }
   
   .login-button:disabled {

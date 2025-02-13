@@ -1,4 +1,3 @@
-/* General Styles */
 * {
   margin: 0;
   padding: 0;
@@ -7,8 +6,8 @@
 }
 
 body {
-  background-color: #121E26; /* Dark Blue-Gray */
-  color: #E3F2FD; /* Soft White-Blue */
+  background-color: #121E26;
+  color: #E3F2FD;
   justify-content: center;
   align-items: center;
   height: 100vh;
@@ -25,7 +24,7 @@ body {
 
 /* Register Box */
 .register-div {
-  background-color: #1B2A34; /* Deep Teal */
+  background-color: #1B2A34;
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.2);
@@ -33,13 +32,13 @@ body {
   text-align: center;
 }
 
-/* Title */
+
 .title {
-  color: #00ACC1; /* Cyan */
+  color: #00ACC1; 
   margin-bottom: 20px;
 }
 
-/* Form Group */
+
 .form-group {
   margin-bottom: 15px;
   text-align: left;
@@ -51,7 +50,7 @@ body {
   margin-bottom: 5px;
 }
 
-/* Input Fields */
+
 .input {
   width: 100%;
   padding: 10px;
@@ -68,7 +67,7 @@ body {
   box-shadow: 0px 0px 5px rgba(0, 255, 255, 0.5);
 }
 
-/* Error & Success Messages */
+
 .error-message, .success-message {
   font-size: 14px;
   padding: 10px;
@@ -86,10 +85,10 @@ body {
   color: #00ff99;
 }
 
-/* Register Button */
+
 .register-button {
   width: 100%;
-  background-color: #00796B; /* Dark Teal */
+  background-color: #00796B;
   color: #E3F2FD;
   padding: 12px;
   border: none;
@@ -109,7 +108,7 @@ body {
   cursor: not-allowed;
 }
 
-/* Login Link */
+
 p {
   margin-top: 10px;
   font-size: 14px;

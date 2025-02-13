@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa"; // Import icons
-import "../css/navbar.css"; // Make sure to create a CSS file for styling
+import "../css/navbar.css";
 
 const Navbar = () => {
   const [isMobile, setIsMobile] = useState(false);

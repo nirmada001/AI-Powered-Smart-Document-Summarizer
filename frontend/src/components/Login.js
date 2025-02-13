@@ -23,7 +23,7 @@ const Login = () => {
         password
       });
 
-      setSuccess("Login Successful 🎉");
+      setSuccess("Login Successful");
       localStorage.setItem("token", response.data.access_token); // Save Token
       setTimeout(() => navigate("/"), 1000); //Redirect to home page after 1 sec
 

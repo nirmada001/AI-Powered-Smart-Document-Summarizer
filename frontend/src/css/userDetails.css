@@ -3,25 +3,24 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #121E26; /* Dark Mode Background */
+  background-color: #121E26; 
   min-height: 100vh;
-  color: #E3F2FD; /* Soft White-Blue */
+  color: #E3F2FD; 
   font-family: Arial, sans-serif;
   padding: 20px;
   margin-top: 70px;
 }
 
-/* User Details Content */
 .user-details-content {
   width: 90%;
   max-width: 800px;
-  background-color: #1B2A34; /* Deep Teal */
+  background-color: #1B2A34; 
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-/* Profile Info */
+
 .profile-info {
   margin-top: 20px;
 }
@@ -32,24 +31,24 @@
 }
 
 .profile-info strong {
-  color: #00ACC1; /* Cyan */
+  color: #00ACC1; 
 }
 
 /* Summarization History */
 h3 {
   margin-top: 20px;
-  color: #26A69A; /* Teal */
+  color: #26A69A;
 }
 
-/* Summary List */
+
 .summary-list {
   list-style: none;
   padding: 0;
 }
 
-/* Summary Item */
+
 .summary-item {
-  background-color: #1E2F3A; /* Darker Teal */
+  background-color: #1E2F3A; 
   padding: 15px;
   margin: 10px 0;
   border-radius: 6px;

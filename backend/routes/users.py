@@ -16,7 +16,7 @@ client = MongoClient(mongo_url)
 db = client["summarizer_db"]
 users_collection = db["users"]
 
-# Create a Blueprint for the users route
+#Blueprint for the users route
 users_bp = Blueprint("users", __name__)
 CORS(users_bp, origins=["http://localhost:3000"], supports_credentials=True)
 
@@ -63,7 +63,7 @@ def login_user():
     user_data = {
         "id": str(user["_id"]),  # Convert ObjectId to string
         "email": user["email"],
-        "name": user.get("name", "User")  # Ensure 'name' exists, fallback to "User"
+        "name": user.get("name", "User")
     }
 
     

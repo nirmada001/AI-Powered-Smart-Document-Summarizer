@@ -21,7 +21,7 @@ load_dotenv()
 # Set up MongoDB connection
 mongo_url = os.getenv("MONGO_URI")
 if not mongo_url:
-    print("❌ ERROR: MONGO_URI is not set properly in the .env file.")
+    print("ERROR: MONGO_URI is not set properly in the .env file.")
 
 client = MongoClient(mongo_url)
 db = client["summarizer_db"]
@@ -29,9 +29,9 @@ summaries_collection = db["summaries"]
 
 # Set OpenAI API Key
 openai.api_key = os.getenv("OPENAI_API_KEY")
-jwt_secret = os.getenv("JWT_SECRET_KEY")  # Ensure this is stored securely
+jwt_secret = os.getenv("JWT_SECRET_KEY")
 
-# Create a Blueprint for summarization routes
+# Blueprint for summarization routes
 summarization_bp = Blueprint("summarization", __name__)
 
 def extract_user_id():
@@ -39,18 +39,18 @@ def extract_user_id():
     token = request.headers.get("Authorization")
     
     if not token:
-        print("❌ No Authorization token found in request headers")
+        print("No Authorization token found in request headers")
         return None
 
     try:
         decoded_token = jwt.decode(token, jwt_secret, algorithms=["HS256"])
-        print("✅ Decoded Token:", decoded_token)  # Debugging
+        print("Decoded Token:", decoded_token)  # Debugging
         return decoded_token.get("sub", {}).get("id")  # Extract user ID from "sub"
     except jwt.ExpiredSignatureError:
-        print("❌ Token expired")
+        print("Token expired")
         return None
     except jwt.InvalidTokenError:
-        print("❌ Invalid token")
+        print("Invalid token")
         return None
 
 
@@ -61,7 +61,7 @@ def extract_text_from_pdf(file):
         text = "".join([page.get_text("text") + "\n" for page in pdf_document])
         return text
     except Exception as e:
-        print(f"❌ PDF Extraction Error: {e}")
+        print(f"PDF Extraction Error: {e}")
         return None
 
 def extract_text_from_docx(docx_path):
@@ -88,14 +88,14 @@ def summarize_text():
     if not text.strip():
         return jsonify({"summary":""}), 400
 
-    # Adjust the prompt based on the selected length
+    # length prompts
     length_prompts = {
         "short": "Provide a brief summary (1-2 sentences).",
         "medium": "Provide a balanced summary (3-5 sentences).",
         "detailed": "Provide a detailed summary (multiple paragraphs)."
     }
 
-    # Adjust the prompt based on the selected tone
+    # tone prompts
     tone_prompts = {
         "professional": "Provide a clear and concise summary with a formal tone.",
         "casual": "Summarize in a simple and engaging way, casual manner",
@@ -137,7 +137,7 @@ def summarize_text():
             })
 
     except Exception as e:
-        print(f"❌ ERROR: {str(e)}")
+        print(f"ERROR: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 # Route to upload a file and summarize its content	
@@ -167,14 +167,14 @@ def upload_file():
         else:
             return jsonify({"error": "Unsupported file format"}), 400
 
-        # Adjust the prompt based on the selected length
+        
         length_prompts = {
             "short": "Provide a brief summary (1-2 sentences).",
             "medium": "Provide a balanced summary (3-5 sentences).",
             "detailed": "Provide a detailed summary (multiple paragraphs)."
         }
 
-        # Adjust the prompt based on the selected tone
+        
         tone_prompts = {
             "professional": "Provide a clear and concise summary with a formal tone.",
             "casual": "Summarize in a simple and engaging way, casual manner",
@@ -189,7 +189,7 @@ def upload_file():
         )
         summary = response["choices"][0]["message"]["content"]
 
-        # 🔹 Generate a title based on the summary
+        # Generate a title based on the summary
         title_prompt = f"Generate a short, meaningful title for the following summary:\n\n{summary}"
         title_response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
@@ -215,7 +215,7 @@ def upload_file():
             })
 
     except Exception as e:
-        print(f"❌ ERROR: {str(e)}")
+        print(f"ERROR: {str(e)}")
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
@@ -247,16 +247,16 @@ def get_user_summaries():
         return jsonify({"summaries": formatted_summaries}), 200
 
     except Exception as e:
-        print(f"❌ ERROR: {str(e)}")
+        print(f"ERROR: {str(e)}")
         return jsonify({"error": str(e)}), 500
     
-# # Route to get a specific summary
+# Route to get a specific summary
 @summarization_bp.route("/summary/<summary_id>", methods=["GET"])
 @jwt_required()
 def get_summary(summary_id):
     # Extract user details from JWT
     user_details = get_jwt_identity()
-    user_id = user_details.get("id")  # Get user ID from JWT token
+    user_id = user_details.get("id")
 
     if not user_id:
         return jsonify({"error": "Unauthorized"}), 401
@@ -282,7 +282,7 @@ def get_summary(summary_id):
 def delete_summary(summary_id):
     # Extract user details from JWT
     user_details = get_jwt_identity()
-    user_id = user_details.get("id")  # Get user ID from JWT token
+    user_id = user_details.get("id")
 
     if not user_id:
         return jsonify({"error": "Unauthorized"}), 401

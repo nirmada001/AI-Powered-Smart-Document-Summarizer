@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaTrash } from "react-icons/fa";
-import "../css/userDetails.css"; // Ensure CSS file exists
+import "../css/userDetails.css";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
 const UserDetails = () => {
   const [user, setUser] = useState(null);
-  const [summaries, setSummaries] = useState([]);  // Store summaries
+  const [summaries, setSummaries] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
